@@ -917,6 +917,229 @@
                 font-size: 20px;
             }
         }
+        
+        /* 手机横屏模式 - 显示为左右布局 */
+        @media (max-width: 900px) and (orientation: landscape) {
+            .content {
+                padding: 5px;
+                padding-left: 130px;
+                padding-right: 130px;
+            }
+            
+            .main-container {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            
+            .left-players, .right-players {
+                position: fixed;
+                top: 60px;
+                width: 120px;
+                min-height: calc(100vh - 100px);
+                max-height: calc(100vh - 100px);
+                padding: 8px;
+            }
+            
+            .left-players {
+                left: 5px;
+            }
+            
+            .right-players {
+                right: 5px;
+            }
+            
+            #scoreboard-view {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .scoreboard {
+                flex-direction: row;
+                gap: 8px;
+                padding: 10px;
+            }
+            
+            .score {
+                font-size: 60px;
+                margin-bottom: 8px;
+            }
+            
+            .team-name {
+                font-size: 12px;
+                margin-bottom: 8px;
+            }
+            
+            .game-time {
+                font-size: 22px;
+                margin-bottom: 10px;
+            }
+            
+            .period {
+                font-size: 12px;
+                margin-bottom: 5px;
+            }
+            
+            .score-button {
+                width: 35px;
+                height: 35px;
+                font-size: 12px;
+            }
+            
+            .stats-row {
+                gap: 15px;
+                margin-bottom: 10px;
+            }
+            
+            .stat-label {
+                font-size: 10px;
+            }
+            
+            .stat-value {
+                font-size: 16px;
+            }
+            
+            .title {
+                font-size: 14px;
+            }
+            
+            .header {
+                padding: 8px;
+            }
+            
+            .header-buttons {
+                gap: 5px;
+            }
+            
+            .tab-button, .premium-button {
+                padding: 5px 10px;
+                font-size: 11px;
+            }
+            
+            .control-buttons {
+                gap: 5px;
+            }
+            
+            .control-button {
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+            
+            .action-buttons {
+                gap: 5px;
+            }
+            
+            .action-button {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+            
+            .section-title {
+                font-size: 11px;
+                margin-bottom: 8px;
+            }
+            
+            .player-section {
+                margin-bottom: 8px;
+            }
+            
+            .player-section-title {
+                font-size: 10px;
+                margin-bottom: 5px;
+            }
+            
+            .player-card {
+                padding: 5px;
+                margin-bottom: 4px;
+            }
+            
+            .player-number {
+                font-size: 14px;
+                min-width: 25px;
+            }
+            
+            .player-name {
+                font-size: 10px;
+                margin: 0 5px;
+            }
+            
+            .player-stats {
+                gap: 8px;
+                margin-right: 5px;
+            }
+            
+            .player-stat-value {
+                font-size: 10px;
+            }
+            
+            .player-stat-label {
+                font-size: 8px;
+            }
+            
+            .player-actions {
+                gap: 2px;
+            }
+            
+            .player-action-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 9px;
+            }
+            
+            .add-player-btn {
+                padding: 5px;
+                font-size: 10px;
+                margin-top: 5px;
+            }
+            
+            .team-actions {
+                gap: 5px;
+                margin-top: 5px;
+            }
+            
+            .team-action-btn {
+                padding: 4px;
+                font-size: 9px;
+            }
+            
+            .center-section {
+                margin: 0 10px;
+            }
+        }
+        
+        /* 小屏手机横屏 */
+        @media (max-width: 700px) and (orientation: landscape) {
+            .content {
+                padding-left: 110px;
+                padding-right: 110px;
+            }
+            
+            .left-players, .right-players {
+                width: 100px;
+                padding: 5px;
+            }
+            
+            .score {
+                font-size: 48px;
+            }
+            
+            .game-time {
+                font-size: 18px;
+            }
+            
+            .team-name {
+                font-size: 11px;
+            }
+            
+            .score-button {
+                width: 30px;
+                height: 30px;
+                font-size: 10px;
+            }
+            
+            .stat-value {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
