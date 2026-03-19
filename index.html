@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTC篮球联赛专用 🏀记分牌</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: #16213e;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab-button {
+            padding: 8px 16px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .tab-button:hover {
+            background: #2980b9;
+        }
+
+        .premium-button {
+            padding: 8px 16px;
+            background: #e67e22;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .premium-button:hover {
+            background: #d35400;
+        }
+
+        .content {
+            position: relative;
+            padding: 20px;
+            min-height: calc(100vh - 160px);
+            padding-left: 320px;
+            padding-right: 320px;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .left-players, .right-players {
+            position: fixed;
+            top: 100px;
+            width: 280px;
+            min-height: calc(100vh - 160px);
+            max-height: calc(100vh - 160px);
+            background: #16213e;
+            border-radius: 10px;
+            padding: 15px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .left-players {
+            left: 20px;
+        }
+
+        .right-players {
+            right: 20px;
+        }
+
+        #scoreboard-view {
+            width: 100%;
+            min-width: 500px;
+        }
+
+        .scoreboard {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .team-section {
+            flex: 1;
+            text-align: center;
+        }
+
+        .team-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .team-name:hover {
+            background: #0f3460;
+        }
+
+        .team-name-input {
+            font-size: 24px;
+            font-weight: bold;
+            background: #0f3460;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            color: #fff;
+            text-align: center;
+            padding: 5px 10px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .score {
+            font-size: 288px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 15px;
+            line-height: 1;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .stat-value.warning {
+            color: #e74c3c;
+        }
+
+        .score-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .score-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .score-button:hover {
+            transform: scale(1.1);
+        }
+
+        .score-button-3 {
+            background: #e74c3c;
+        }
+
+        .score-button-2 {
+            background: #3498db;
+        }
+
+        .score-button-1 {
+            background: #2ecc71;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-button {
+            padding: 8px 16px;
+            background: #2c3e50;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .action-button:hover {
+            background: #34495e;
+        }
+
+        .center-section {
+            text-align: center;
+            margin: 0 20px;
+        }
+
+        .period {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .game-time {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        .game-time.warning {
+            color: #e74c3c;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .control-button:hover {
+            background: #2980b9;
+        }
+
+        .control-button.pause {
+            background: #e74c3c;
+        }
+
+        .control-button.pause:hover {
+            background: #c0392b;
+        }
+
+        .timeout-timer {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .timeout-timer.hidden {
+            display: none;
+        }
+
+        .players-section {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .team-players {
+            flex: 1;
+            background: #16213e;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #888;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .player-section {
+            margin-bottom: 20px;
+        }
+
+        .player-section-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            padding-left: 10px;
+        }
+
+        .player-card {
+            background: #0f3460;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .player-card:hover {
+            background: #16213e;
+        }
+
+        .player-card.on-court {
+            border-left-color: #2ecc71;
+            background: #16213e;
+        }
+
+        .player-card.fouled-out {
+            border-left-color: #e74c3c;
+            background: #3d1f1f;
+            opacity: 0.7;
+        }
+
+        .player-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+            min-width: 40px;
+        }
+
+        .player-name {
+            flex: 1;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+
+        .player-fouled-out-badge {
+            background: #e74c3c;
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
+        .player-stats {
+            display: flex;
+            gap: 15px;
+            margin-right: 10px;
+        }
+
+        .player-stat {
+            text-align: center;
+        }
+
+        .player-stat-value {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .player-stat-value.foul-warning {
+            color: #e74c3c;
+        }
+
+        .player-stat-label {
+            font-size: 10px;
+            color: #888;
+        }
+
+        .player-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .player-action-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-foul {
+            background: #e74c3c;
+        }
+
+        .btn-foul:hover {
+            background: #c0392b;
+        }
+
+        .btn-sub {
+            background: #3498db;
+        }
+
+        .btn-sub:hover {
+            background: #2980b9;
+        }
+
+        .btn-edit {
+            background: #f39c12;
+        }
+
+        .btn-edit:hover {
+            background: #e67e22;
+        }
+
+        .btn-delete {
+            background: #95a5a6;
+        }
+
+        .btn-delete:hover {
+            background: #7f8c8d;
+        }
+
+        .add-player-btn {
+            width: 100%;
+            padding: 10px;
+            background: #2ecc71;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .add-player-btn:hover {
+            background: #27ae60;
+        }
+
+        .team-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .team-action-btn {
+            flex: 1;
+            padding: 8px;
+            background: #34495e;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .team-action-btn:hover {
+            background: #2c3e50;
+        }
+
+        .game-log-section {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .game-log-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+
+        #game-log-content {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .game-log-item {
+            background: #0f3460;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .game-log-item .log-time {
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .game-log-item .log-period {
+            color: #ffd700;
+            margin-left: 10px;
+        }
+
+        .game-log-item .log-content {
+            margin-top: 5px;
+        }
+
+        .game-log-item .log-score {
+            color: #2ecc71;
+            float: right;
+            font-weight: bold;
+        }
+
+        .footer {
+            background: #16213e;
+            padding: 15px;
+            text-align: center;
+            border-top: 2px solid #3498db;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #0f3460;
+            border: 2px solid #3498db;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #2980b9;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .modal-btn-cancel {
+            background: #95a5a6;
+            color: #fff;
+        }
+
+        .modal-btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        .modal-btn-save {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .modal-btn-save:hover {
+            background: #2980b9;
+        }
+
+        .score-select-modal .modal-content {
+            max-width: 500px;
+        }
+
+        .player-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .score-select-player {
+            background: #0f3460;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .score-select-player:hover {
+            background: #16213e;
+        }
+
+        .score-select-player .player-number {
+            font-size: 20px;
+        }
+
+        .score-select-player .player-name {
+            flex: 1;
+        }
+
+        .score-select-player .player-points {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #0f3460;
+            border-radius: 5px;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            min-width: 30px;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .pricing {
+            margin: 20px 0;
+        }
+
+        .price {
+            font-size: 32px;
+            font-weight: bold;
+            color: #e67e22;
+            margin-bottom: 5px;
+        }
+
+        .price-note {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .stats-table th, .stats-table td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .stats-table th {
+            background: #0f3460;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .stats-table tr:hover {
+            background: #0f3460;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .active-timeout {
+            background: #e74c3c !important;
+        }
+
+        .active-timeout:hover {
+            background: #c0392b !important;
+        }
+
+        #saved-teams-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .saved-team-item {
+            background: #0f3460;
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .saved-team-name {
+            font-weight: bold;
+        }
+
+        .saved-team-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .saved-team-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .saved-team-btn.load {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .saved-team-btn.delete {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        @media (max-width: 1200px) {
+            .content {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .left-players, .right-players {
+                position: static;
+                flex: 1;
+                width: 100%;
+                max-width: 600px;
+                min-height: 400px;
+                max-height: none;
+                margin-bottom: 20px;
+            }
+            
+            #scoreboard-view {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .scoreboard {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .score {
+                font-size: 144px;
+            }
+            
+            .main-container {
+                gap: 10px;
+            }
+            
+            .content {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">KTC篮球联赛专用 🏀记分牌</div>
+        <div class="header-buttons">
+            <button class="tab-button" id="stats-btn" onclick="showStatsModal()" style="display: none;">统计</button>
+            <button class="premium-button" id="premium-btn" onclick="showPremiumModal()">升级</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="main-container">
+            <div class="left-players" id="home-players"></div>
+            
+            <div id="scoreboard-view">
+                <div class="scoreboard">
+                    <div class="team-section">
+                        <div class="team-name" id="home-team-name" onclick="editTeamName('home')">主队</div>
+                        <div class="score" id="home-score">0</div>
+                        <div class="stats-row">
+                            <div class="stat">
+                                <div class="stat-label">犯规</div>
+                                <div class="stat-value" id="home-fouls">0</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">暂停</div>
+                                <div class="stat-value" id="home-timeouts">2</div>
+                            </div>
+                        </div>
+                        <div class="score-buttons">
+                            <button class="score-button score-button-3" onclick="showScorePlayerSelect('home', 3)">+3</button>
+                            <button class="score-button score-button-2" onclick="showScorePlayerSelect('home', 2)">+2</button>
+                            <button class="score-button score-button-1" onclick="showScorePlayerSelect('home', 1)">+1</button>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="addFoul('home')">犯规</button>
+                            <button class="action-button" id="home-timeout-btn" onclick="useTimeout('home')">暂停</button>
+                        </div>
+                        <div class="timeout-timer hidden" id="home-timeout-timer"></div>
+                    </div>
+
+                    <div class="center-section">
+                        <div class="period" id="period-display">第 1 节</div>
+                        <div class="game-time" id="game-time">10:00</div>
+                        <div class="control-buttons">
+                            <button class="control-button" id="start-pause-btn" onclick="toggleGame()">开始</button>
+                            <button class="control-button" onclick="resetGame()">重置</button>
+                            <button class="control-button" onclick="nextPeriod()">下一节</button>
+                            <button class="control-button" id="end-game-btn" onclick="endGame()" style="background: #e74c3c;">结束比赛</button>
+                        </div>
+                    </div>
+
+                    <div class="team-section">
+                        <div class="team-name" id="away-team-name" onclick="editTeamName('away')">客队</div>
+                        <div class="score" id="away-score">0</div>
+                        <div class="stats-row">
+                            <div class="stat">
+                                <div class="stat-label">犯规</div>
+                                <div class="stat-value" id="away-fouls">0</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-label">暂停</div>
+                                <div class="stat-value" id="away-timeouts">2</div>
+                            </div>
+                        </div>
+                        <div class="score-buttons">
+                            <button class="score-button score-button-3" onclick="showScorePlayerSelect('away', 3)">+3</button>
+                            <button class="score-button score-button-2" onclick="showScorePlayerSelect('away', 2)">+2</button>
+                            <button class="score-button score-button-1" onclick="showScorePlayerSelect('away', 1)">+1</button>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-button" onclick="addFoul('away')">犯规</button>
+                            <button class="action-button" id="away-timeout-btn" onclick="useTimeout('away')">暂停</button>
+                        </div>
+                        <div class="timeout-timer hidden" id="away-timeout-timer"></div>
+                    </div>
+                </div>
+
+                <div class="game-log-section hidden" id="game-log-section">
+                    <div class="game-log-title">比赛记录</div>
+                    <div id="game-log-content"></div>
+                </div>
+            </div>
+            
+            <div class="right-players" id="away-players"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <span id="version-text">免费版</span> - KTC篮球联赛专用记分牌
+    </div>
+
+    <div class="modal" id="player-modal">
+        <div class="modal-content">
+            <div class="modal-title" id="player-modal-title">添加球员</div>
+            <input type="text" class="modal-input" id="player-number" placeholder="球员号码" maxlength="2">
+            <input type="text" class="modal-input" id="player-name" placeholder="球员姓名" maxlength="20">
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closePlayerModal()">取消</button>
+                <button class="modal-btn modal-btn-save" onclick="savePlayer()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal score-select-modal" id="score-select-modal">
+        <div class="modal-content">
+            <div class="modal-title">选择得分球员</div>
+            <div class="player-list" id="score-player-list"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeScoreSelectModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="premium-modal">
+        <div class="modal-content">
+            <div class="modal-title">升级到专业版</div>
+            <div class="feature-item">
+                <div class="feature-icon">👥</div>
+                <div class="feature-text">
+                    <div class="feature-title">球员管理</div>
+                    <div class="feature-desc">录入球队队员姓名和号码</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📊</div>
+                <div class="feature-text">
+                    <div class="feature-title">个人数据统计</div>
+                    <div class="feature-desc">记录每位球员的得分和犯规情况</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📝</div>
+                <div class="feature-text">
+                    <div class="feature-title">比赛记录</div>
+                    <div class="feature-desc">详细记录每次得分的时间、球员和分数</div>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📈</div>
+                <div class="feature-text">
+                    <div class="feature-title">统计导出</div>
+                    <div class="feature-desc">比赛结束后导出完整统计报告</div>
+                </div>
+            </div>
+            <div class="pricing">
+                <div class="price">¥18.00</div>
+                <div class="price-note">一次性购买，永久使用</div>
+            </div>
+            <button class="modal-btn modal-btn-save" onclick="unlockPremium()">立即解锁</button>
+            <button class="modal-btn modal-btn-cancel" onclick="closePremiumModal()" style="margin-top: 10px;">稍后再说</button>
+        </div>
+    </div>
+
+    <div class="modal" id="stats-modal">
+        <div class="modal-content">
+            <div class="modal-title">比赛统计</div>
+            <div id="stats-content"></div>
+            <div class="modal-buttons" style="margin-top: 20px;">
+                <button class="modal-btn modal-btn-cancel" onclick="closeStatsModal()">关闭</button>
+                <button class="modal-btn modal-btn-save" onclick="exportToCSV()">导出CSV</button>
+                <button class="modal-btn modal-btn-save" onclick="exportToJSON()">导出JSON</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="saved-teams-modal">
+        <div class="modal-content">
+            <div class="modal-title">已保存的球队</div>
+            <div id="saved-teams-list"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-cancel" onclick="closeSavedTeamsModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const REGULAR_PERIOD_TIME = 10 * 60;
+        const OVERTIME_TIME = 5 * 60;
+        const TIMEOUT_DURATION = 60;
+
+        let gameState = {
+            homeTeam: {
+                name: '主队',
+                score: 0,
+                fouls: 0,
+                timeouts: 2,
+                players: []
+            },
+            awayTeam: {
+                name: '客队',
+                score: 0,
+                fouls: 0,
+                timeouts: 2,
+                players: []
+            },
+            gameTime: REGULAR_PERIOD_TIME,
+            period: 1,
+            isRunning: false,
+            isProVersion: false,
+            gameLog: [],
+            gameStartTime: null,
+            isGameEnded: false,
+            isOvertime: false,
+            timeoutTimers: {
+                home: TIMEOUT_DURATION,
+                homeRunning: false,
+                away: TIMEOUT_DURATION,
+                awayRunning: false
+            }
+        };
+
+        let timerInterval = null;
+        let timeoutInterval = null;
+        let editingPlayer = null;
+        let editingTeam = null;
+        let currentTeamToSave = null;
+        let pendingScore = null;
+
+        function init() {
+            loadSettings();
+            updateDisplay();
+            if (gameState.isProVersion) {
+                updateProUI();
+                renderPlayers();
+                renderGameLog();
+            }
+        }
+
+        function saveSettings() {
+            localStorage.setItem('fibaGameState', JSON.stringify(gameState));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('fibaGameState');
+            if (saved) {
+                gameState = JSON.parse(saved);
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('home-team-name').textContent = gameState.homeTeam.name;
+            document.getElementById('home-score').textContent = gameState.homeTeam.score;
+            
+            const homeFoulsEl = document.getElementById('home-fouls');
+            homeFoulsEl.textContent = gameState.homeTeam.fouls;
+            if (gameState.homeTeam.fouls >= 5) {
+                homeFoulsEl.classList.add('warning');
+            } else {
+                homeFoulsEl.classList.remove('warning');
+            }
+            
+            document.getElementById('home-timeouts').textContent = gameState.homeTeam.timeouts;
+            
+            document.getElementById('away-team-name').textContent = gameState.awayTeam.name;
+            document.getElementById('away-score').textContent = gameState.awayTeam.score;
+            
+            const awayFoulsEl = document.getElementById('away-fouls');
+            awayFoulsEl.textContent = gameState.awayTeam.fouls;
+            if (gameState.awayTeam.fouls >= 5) {
+                awayFoulsEl.classList.add('warning');
+            } else {
+                awayFoulsEl.classList.remove('warning');
+            }
+            
+            document.getElementById('away-timeouts').textContent = gameState.awayTeam.timeouts;
+            
+            const periodDisplay = document.getElementById('period-display');
+            periodDisplay.textContent = getPeriodDisplay(gameState.period, gameState.isOvertime);
+            
+            const timeElement = document.getElementById('game-time');
+            timeElement.textContent = formatTime(gameState.gameTime);
+            
+            if (gameState.gameTime <= 30) {
+                timeElement.classList.add('warning');
+            } else {
+                timeElement.classList.remove('warning');
+            }
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function getPeriodDisplay(period, isOvertime) {
+            if (isOvertime) {
+                return `加时${period}`;
+            }
+            return `第 ${period} 节`;
+        }
+
+        function addScore(team, points) {
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            teamData.score += points;
+            saveSettings();
+            updateDisplay();
+        }
+
+        function showScorePlayerSelect(team, points) {
+            if (!gameState.isProVersion) {
+                addScore(team, points);
+                return;
+            }
+            
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            const onCourtPlayers = teamData.players.filter(p => p.isOnCourt && p.fouls < 5);
+            
+            if (onCourtPlayers.length === 0) {
+                alert('场上没有可上场的球员，请先添加球员并进行换人');
+                return;
+            }
+            
+            pendingScore = { team, points };
+            
+            const listEl = document.getElementById('score-player-list');
+            let html = '';
+            
+            onCourtPlayers.forEach(player => {
+                html += `
+                    <div class="score-select-player" onclick="confirmPlayerScore('${player.id}')">
+                        <div class="player-number">${player.number}</div>
+                        <div class="player-name">${player.name}</div>
+                        <div class="player-points">${player.points}分</div>
+                    </div>
+                `;
+            });
+            
+            listEl.innerHTML = html;
+            document.getElementById('score-select-modal').classList.add('active');
+        }
+
+        function confirmPlayerScore(playerId) {
+            const { team, points } = pendingScore;
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            const player = teamData.players.find(p => p.id === playerId);
+            
+            if (player) {
+                player.points += points;
+                teamData.score += points;
+                
+                addGameLog({
+                    type: 'score',
+                    team: team,
+                    playerId: playerId,
+                    playerName: player.name,
+                    playerNumber: player.number,
+                    points: points,
+                    gameTime: gameState.gameTime,
+                    period: gameState.period,
+                    isOvertime: gameState.isOvertime
+                });
+                
+                saveSettings();
+                updateDisplay();
+                renderPlayers();
+                renderGameLog();
+            }
+            
+            closeScoreSelectModal();
+        }
+
+        function closeScoreSelectModal() {
+            document.getElementById('score-select-modal').classList.remove('active');
+            pendingScore = null;
+        }
+
+        function addFoul(team) {
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            teamData.fouls++;
+            saveSettings();
+            updateDisplay();
+            
+            addGameLog({
+                type: 'foul',
+                team: team,
+                gameTime: gameState.gameTime,
+                period: gameState.period,
+                isOvertime: gameState.isOvertime
+            });
+            
+            if (gameState.isProVersion) {
+                renderGameLog();
+            }
+        }
+
+        function useTimeout(team) {
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            const isRunning = team === 'home' ? gameState.timeoutTimers.homeRunning : gameState.timeoutTimers.awayRunning;
+            
+            if (isRunning) {
+                stopTimeoutTimer(team);
+            } else if (teamData.timeouts > 0) {
+                teamData.timeouts--;
+                startTimeoutTimer(team);
+                
+                addGameLog({
+                    type: 'timeout',
+                    team: team,
+                    gameTime: gameState.gameTime,
+                    period: gameState.period,
+                    isOvertime: gameState.isOvertime
+                });
+                
+                updateDisplay();
+                if (gameState.isProVersion) {
+                    renderGameLog();
+                }
+            }
+        }
+
+        function startTimeoutTimer(team) {
+            const timerKey = team === 'home' ? 'home' : 'away';
+            const timerEl = document.getElementById(`${team}-timeout-timer`);
+            const btnEl = document.getElementById(`${team}-timeout-btn`);
+            
+            gameState.timeoutTimers[timerKey] = TIMEOUT_DURATION;
+            gameState.timeoutTimers[`${timerKey}Running`] = true;
+            
+            timerEl.classList.remove('hidden');
+            btnEl.classList.add('active-timeout');
+            btnEl.textContent = '停止';
+            
+            updateTimeoutDisplay(team);
+            
+            if (timeoutInterval) {
+                clearInterval(timeoutInterval);
+            }
+            
+            timeoutInterval = setInterval(() => {
+                gameState.timeoutTimers[timerKey]--;
+                updateTimeoutDisplay(team);
+                
+                if (gameState.timeoutTimers[timerKey] <= 0) {
+                    stopTimeoutTimer(team);
+                    alert(`${team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name} 暂停时间到！`);
+                }
+            }, 1000);
+            
+            if (gameState.isRunning) {
+                gameState.isRunning = false;
+                const gameBtn = document.getElementById('start-pause-btn');
+                gameBtn.textContent = '开始';
+                gameBtn.classList.remove('pause');
+                clearInterval(timerInterval);
+            }
+        }
+
+        function stopTimeoutTimer(team) {
+            const timerKey = team === 'home' ? 'home' : 'away';
+            const timerEl = document.getElementById(`${team}-timeout-timer`);
+            const btnEl = document.getElementById(`${team}-timeout-btn`);
+            
+            gameState.timeoutTimers[`${timerKey}Running`] = false;
+            
+            timerEl.classList.add('hidden');
+            btnEl.classList.remove('active-timeout');
+            btnEl.textContent = '暂停';
+            
+            clearInterval(timeoutInterval);
+        }
+
+        function updateTimeoutDisplay(team) {
+            const timerKey = team === 'home' ? 'home' : 'away';
+            const timerEl = document.getElementById(`${team}-timeout-timer`);
+            const seconds = gameState.timeoutTimers[timerKey];
+            timerEl.textContent = `暂停倒计时: ${seconds}秒`;
+        }
+
+        function toggleGame() {
+            const btn = document.getElementById('start-pause-btn');
+            if (gameState.isRunning) {
+                gameState.isRunning = false;
+                btn.textContent = '开始';
+                btn.classList.remove('pause');
+                clearInterval(timerInterval);
+                
+                addGameLog({
+                    type: 'officialTimeout',
+                    gameTime: gameState.gameTime,
+                    period: gameState.period,
+                    isOvertime: gameState.isOvertime
+                });
+                if (gameState.isProVersion) {
+                    renderGameLog();
+                }
+            } else {
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                }
+                
+                gameState.isRunning = true;
+                btn.textContent = '暂停';
+                btn.classList.add('pause');
+                
+                if (!gameState.gameStartTime) {
+                    gameState.gameStartTime = new Date().toISOString();
+                    saveSettings();
+                }
+                
+                timerInterval = setInterval(() => {
+                    if (gameState.gameTime > 0) {
+                        gameState.gameTime--;
+                        updateDisplay();
+                    } else {
+                        gameState.isRunning = false;
+                        btn.textContent = '开始';
+                        btn.classList.remove('pause');
+                        clearInterval(timerInterval);
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetGame() {
+            if (!confirm('确定要重置比赛吗？所有数据将被清空。')) {
+                return;
+            }
+            
+            gameState.homeTeam.score = 0;
+            gameState.homeTeam.fouls = 0;
+            gameState.homeTeam.timeouts = 2;
+            gameState.awayTeam.score = 0;
+            gameState.awayTeam.fouls = 0;
+            gameState.awayTeam.timeouts = 2;
+            gameState.gameTime = REGULAR_PERIOD_TIME;
+            gameState.period = 1;
+            gameState.isRunning = false;
+            gameState.gameLog = [];
+            gameState.gameStartTime = null;
+            gameState.isGameEnded = false;
+            gameState.isOvertime = false;
+            
+            gameState.homeTeam.players.forEach(p => {
+                p.points = 0;
+                p.fouls = 0;
+                p.isOnCourt = false;
+            });
+            
+            gameState.awayTeam.players.forEach(p => {
+                p.points = 0;
+                p.fouls = 0;
+                p.isOnCourt = false;
+            });
+            
+            stopTimeoutTimer('home');
+            stopTimeoutTimer('away');
+            clearInterval(timerInterval);
+            
+            const btn = document.getElementById('start-pause-btn');
+            btn.textContent = '开始';
+            btn.classList.remove('pause');
+            
+            saveSettings();
+            updateDisplay();
+            if (gameState.isProVersion) {
+                renderPlayers();
+                renderGameLog();
+            }
+        }
+
+        function nextPeriod() {
+            if (gameState.period === 4 && !gameState.isOvertime) {
+                if (gameState.homeTeam.score === gameState.awayTeam.score) {
+                    gameState.isOvertime = true;
+                    gameState.period = 1;
+                    gameState.gameTime = OVERTIME_TIME;
+                } else {
+                    alert('比赛已结束！');
+                    return;
+                }
+            } else if (gameState.isOvertime) {
+                if (gameState.homeTeam.score === gameState.awayTeam.score) {
+                    gameState.period++;
+                    gameState.gameTime = OVERTIME_TIME;
+                } else {
+                    alert('比赛已结束！');
+                    return;
+                }
+            } else {
+                gameState.period++;
+                gameState.gameTime = REGULAR_PERIOD_TIME;
+            }
+            
+            gameState.homeTeam.fouls = 0;
+            gameState.awayTeam.fouls = 0;
+            
+            if (gameState.isOvertime) {
+                gameState.homeTeam.timeouts = 1;
+                gameState.awayTeam.timeouts = 1;
+            } else if (gameState.period === 4) {
+                gameState.homeTeam.timeouts = 2;
+                gameState.awayTeam.timeouts = 2;
+            }
+            
+            gameState.isRunning = false;
+            stopTimeoutTimer('home');
+            stopTimeoutTimer('away');
+            clearInterval(timerInterval);
+            
+            addGameLog({
+                type: 'period',
+                period: gameState.period,
+                isOvertime: gameState.isOvertime,
+                gameTime: 0
+            });
+            
+            const btn = document.getElementById('start-pause-btn');
+            btn.textContent = '开始';
+            btn.classList.remove('pause');
+            
+            saveSettings();
+            updateDisplay();
+            if (gameState.isProVersion) {
+                renderPlayers();
+                renderGameLog();
+            }
+        }
+
+        function endGame() {
+            if (!confirm('确定要结束比赛吗？')) {
+                return;
+            }
+            
+            gameState.isGameEnded = true;
+            gameState.isRunning = false;
+            clearInterval(timerInterval);
+            
+            addGameLog({
+                type: 'end',
+                gameTime: gameState.gameTime,
+                period: gameState.period,
+                isOvertime: gameState.isOvertime
+            });
+            
+            const btn = document.getElementById('start-pause-btn');
+            btn.textContent = '开始';
+            btn.classList.remove('pause');
+            
+            saveSettings();
+            updateDisplay();
+            if (gameState.isProVersion) {
+                showStatsModal();
+                renderGameLog();
+            }
+        }
+
+        function editTeamName(team) {
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            const currentName = teamData.name;
+            const newName = prompt('请输入球队名称:', currentName);
+            if (newName && newName.trim()) {
+                teamData.name = newName.trim();
+                saveSettings();
+                updateDisplay();
+                if (gameState.isProVersion) {
+                    renderPlayers();
+                }
+            }
+        }
+
+        function showPlayerModal(team) {
+            editingPlayer = null;
+            editingTeam = team;
+            document.getElementById('player-modal-title').textContent = '添加球员';
+            document.getElementById('player-number').value = '';
+            document.getElementById('player-name').value = '';
+            document.getElementById('player-modal').classList.add('active');
+        }
+
+        function closePlayerModal() {
+            document.getElementById('player-modal').classList.remove('active');
+            editingPlayer = null;
+            editingTeam = null;
+        }
+
+        function savePlayer() {
+            const number = document.getElementById('player-number').value.trim();
+            const name = document.getElementById('player-name').value.trim();
+            
+            if (!number || !name) {
+                alert('请输入球员号码和姓名');
+                return;
+            }
+            
+            if (isNaN(number) || number < 1 || number > 99) {
+                alert('请输入有效的球员号码 (1-99)');
+                return;
+            }
+            
+            const teamData = editingTeam === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            
+            if (editingPlayer) {
+                editingPlayer.number = number;
+                editingPlayer.name = name;
+            } else {
+                if (teamData.players.some(p => p.number === number)) {
+                    alert('该号码已存在');
+                    return;
+                }
+                
+                teamData.players.push({
+                    id: Date.now().toString(),
+                    number: number,
+                    name: name,
+                    points: 0,
+                    fouls: 0,
+                    isOnCourt: false
+                });
+            }
+            
+            saveSettings();
+            closePlayerModal();
+            renderPlayers();
+        }
+
+        function editPlayer(team, playerId) {
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            const player = teamData.players.find(p => p.id === playerId);
+            if (player) {
+                editingPlayer = player;
+                editingTeam = team;
+                document.getElementById('player-modal-title').textContent = '编辑球员';
+                document.getElementById('player-number').value = player.number;
+                document.getElementById('player-name').value = player.name;
+                document.getElementById('player-modal').classList.add('active');
+            }
+        }
+
+        function deletePlayer(team, playerId) {
+            if (!confirm('确定要删除该球员吗？')) {
+                return;
+            }
+            
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            teamData.players = teamData.players.filter(p => p.id !== playerId);
+            saveSettings();
+            renderPlayers();
+        }
+
+        function substitutePlayer(team, playerId) {
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            const player = teamData.players.find(p => p.id === playerId);
+            const onCourtCount = teamData.players.filter(p => p.isOnCourt && p.fouls < 5).length;
+            
+            if (player) {
+                if (player.fouls >= 5) {
+                    alert('该球员已犯满离场，不能上场');
+                    return;
+                }
+                
+                if (player.isOnCourt && onCourtCount <= 1) {
+                    alert('场上至少需要1名球员');
+                    return;
+                }
+                if (!player.isOnCourt && onCourtCount >= 5) {
+                    alert('场上最多只能有5名球员');
+                    return;
+                }
+                player.isOnCourt = !player.isOnCourt;
+                
+                addGameLog({
+                    type: 'substitution',
+                    team: team,
+                    playerName: player.name,
+                    playerNumber: player.number,
+                    isOnCourt: player.isOnCourt,
+                    gameTime: gameState.gameTime,
+                    period: gameState.period,
+                    isOvertime: gameState.isOvertime
+                });
+                
+                saveSettings();
+                renderPlayers();
+                renderGameLog();
+            }
+        }
+
+        function addPlayerFoul(team, playerId) {
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            const player = teamData.players.find(p => p.id === playerId);
+            if (player && player.fouls < 5) {
+                player.fouls++;
+                teamData.fouls++;
+                
+                addGameLog({
+                    type: 'playerFoul',
+                    team: team,
+                    playerName: player.name,
+                    playerNumber: player.number,
+                    gameTime: gameState.gameTime,
+                    period: gameState.period,
+                    isOvertime: gameState.isOvertime
+                });
+                
+                if (player.fouls >= 5) {
+                    player.isOnCourt = false;
+                    addGameLog({
+                        type: 'fouledOut',
+                        team: team,
+                        playerName: player.name,
+                        playerNumber: player.number,
+                        gameTime: gameState.gameTime,
+                        period: gameState.period,
+                        isOvertime: gameState.isOvertime
+                    });
+                    alert(`球员 #${player.number} ${player.name} 已犯满5次，被罚下场！`);
+                }
+                
+                saveSettings();
+                renderPlayers();
+                updateDisplay();
+                renderGameLog();
+            } else if (player && player.fouls >= 5) {
+                alert('该球员已犯规满5次，不能继续比赛');
+            }
+        }
+
+        function showPremiumModal() {
+            document.getElementById('premium-modal').classList.add('active');
+        }
+
+        function closePremiumModal() {
+            document.getElementById('premium-modal').classList.remove('active');
+        }
+
+        function unlockPremium() {
+            gameState.isProVersion = true;
+            saveSettings();
+            updateProUI();
+            renderPlayers();
+            renderGameLog();
+            closePremiumModal();
+            alert('已升级到专业版！');
+        }
+
+        function updateProUI() {
+            document.getElementById('premium-btn').style.display = 'none';
+            document.getElementById('stats-btn').style.display = 'inline-block';
+            document.getElementById('version-text').textContent = '专业版';
+            document.getElementById('game-log-section').classList.remove('hidden');
+        }
+
+        function renderPlayers() {
+            if (!gameState.isProVersion) return;
+            renderTeamPlayers('home');
+            renderTeamPlayers('away');
+        }
+
+        function renderTeamPlayers(team) {
+            const container = document.getElementById(`${team}-players`);
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            
+            let html = `<div class="section-title">${teamData.name}</div>`;
+            
+            const onCourt = teamData.players.filter(p => p.isOnCourt && p.fouls < 5);
+            const bench = teamData.players.filter(p => !p.isOnCourt && p.fouls < 5);
+            const fouledOut = teamData.players.filter(p => p.fouls >= 5);
+            
+            html += `<div class="player-section">
+                <div class="player-section-title">在场球员 (${onCourt.length}/5)</div>`;
+            
+            onCourt.forEach(player => {
+                html += renderPlayerCard(team, player, true);
+            });
+            
+            html += `</div>`;
+            
+            if (fouledOut.length > 0) {
+                html += `<div class="player-section">
+                    <div class="player-section-title" style="color: #e74c3c;">犯满离场 (${fouledOut.length})</div>`;
+                fouledOut.forEach(player => {
+                    html += renderPlayerCard(team, player, false, true);
+                });
+                html += `</div>`;
+            }
+            
+            html += `<div class="player-section">
+                <div class="player-section-title">替补球员 (${bench.length})</div>`;
+            
+            bench.forEach(player => {
+                html += renderPlayerCard(team, player, false);
+            });
+            
+            html += `</div><button class="add-player-btn" onclick="showPlayerModal('${team}')">+ 添加球员</button>`;
+            
+            html += `
+                <div class="team-actions">
+                    <button class="team-action-btn" onclick="saveTeamToList('${team}')">保存球队</button>
+                    <button class="team-action-btn" onclick="showSavedTeamsModal('${team}')">加载球队</button>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        function renderPlayerCard(team, player, isOnCourt, isFouledOut = false) {
+            const foulClass = player.fouls >= 5 ? 'foul-warning' : '';
+            const fouledOutBadge = player.fouls >= 5 ? '<span class="player-fouled-out-badge">犯满离场</span>' : '';
+            const cardClass = isFouledOut ? 'fouled-out' : (isOnCourt ? 'on-court' : '');
+            
+            return `
+                <div class="player-card ${cardClass}">
+                    <div class="player-number">${player.number}</div>
+                    <div class="player-name">${player.name}${fouledOutBadge}</div>
+                    <div class="player-stats">
+                        <div class="player-stat">
+                            <div class="player-stat-value">${player.points}</div>
+                            <div class="player-stat-label">得分</div>
+                        </div>
+                        <div class="player-stat">
+                            <div class="player-stat-value ${foulClass}">${player.fouls}</div>
+                            <div class="player-stat-label">犯规</div>
+                        </div>
+                    </div>
+                    <div class="player-actions">
+                        ${isOnCourt && player.fouls < 5 ? `
+                            <button class="player-action-btn btn-foul" onclick="addPlayerFoul('${team}', '${player.id}')">犯</button>
+                        ` : ''}
+                        ${player.fouls < 5 ? `
+                            <button class="player-action-btn btn-sub" onclick="substitutePlayer('${team}', '${player.id}')">${isOnCourt ? '下' : '上'}</button>
+                        ` : ''}
+                        <button class="player-action-btn btn-edit" onclick="editPlayer('${team}', '${player.id}')">编</button>
+                        <button class="player-action-btn btn-delete" onclick="deletePlayer('${team}', '${player.id}')">删</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addGameLog(event) {
+            event.timestamp = new Date().toISOString();
+            gameState.gameLog.unshift(event);
+            saveSettings();
+        }
+
+        function renderGameLog() {
+            if (!gameState.isProVersion) return;
+            
+            const container = document.getElementById('game-log-content');
+            let html = '';
+            
+            gameState.gameLog.slice(0, 20).forEach(log => {
+                const timeStr = formatTime(log.gameTime);
+                const periodStr = getPeriodDisplay(log.period, log.isOvertime);
+                let content = '';
+                let score = '';
+                
+                if (log.type === 'score') {
+                    const teamName = log.team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name;
+                    if (log.playerName) {
+                        content = `${teamName} #${log.playerNumber} ${log.playerName} 投进${log.points}分`;
+                    } else {
+                        content = `${teamName} 投进${log.points}分`;
+                    }
+                    score = `${gameState.homeTeam.score} - ${gameState.awayTeam.score}`;
+                } else if (log.type === 'foul') {
+                    const teamName = log.team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name;
+                    content = `${teamName} 犯规`;
+                } else if (log.type === 'timeout') {
+                    const teamName = log.team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name;
+                    content = `${teamName} 请求暂停`;
+                } else if (log.type === 'substitution') {
+                    const teamName = log.team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name;
+                    content = `${teamName} #${log.playerNumber} ${log.playerName} ${log.isOnCourt ? '上场' : '下场'}`;
+                } else if (log.type === 'period') {
+                    content = `开始${getPeriodDisplay(log.period, log.isOvertime)}`;
+                } else if (log.type === 'end') {
+                    content = '比赛结束';
+                    score = `${gameState.homeTeam.score} - ${gameState.awayTeam.score}`;
+                } else if (log.type === 'officialTimeout') {
+                    content = '官方暂停时间';
+                } else if (log.type === 'fouledOut') {
+                    const teamName = log.team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name;
+                    content = `${teamName} #${log.playerNumber} ${log.playerName} 犯满离场`;
+                } else if (log.type === 'playerFoul') {
+                    const teamName = log.team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name;
+                    content = `${teamName} #${log.playerNumber} ${log.playerName} 犯规`;
+                }
+                
+                html += `
+                    <div class="game-log-item">
+                        <span class="log-time">${timeStr}</span>
+                        <span class="log-period">${periodStr}</span>
+                        ${score ? `<span class="log-score">${score}</span>` : ''}
+                        <div class="log-content">${content}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function showStatsModal() {
+            const modal = document.getElementById('stats-modal');
+            const content = document.getElementById('stats-content');
+            
+            let html = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2 style="color: #ffd700; margin-bottom: 10px;">${gameState.homeTeam.name} vs ${gameState.awayTeam.name}</h2>
+                    <p style="color: #888;">最终比分: ${gameState.homeTeam.score} - ${gameState.awayTeam.score}</p>
+                    <p style="color: #888; font-size: 12px;">比赛时间: ${gameState.gameStartTime ? new Date(gameState.gameStartTime).toLocaleString() : '未记录'}</p>
+                </div>
+            `;
+            
+            html += `<h3 style="color: #3498db; margin: 20px 0 10px 0;">${gameState.homeTeam.name}</h3>`;
+            html += generateTeamStatsTable(gameState.homeTeam);
+            
+            html += `<h3 style="color: #e74c3c; margin: 20px 0 10px 0;">${gameState.awayTeam.name}</h3>`;
+            html += generateTeamStatsTable(gameState.awayTeam);
+            
+            content.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function generateTeamStatsTable(teamData) {
+            let html = `
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>号码</th>
+                            <th>姓名</th>
+                            <th>得分</th>
+                            <th>投篮</th>
+                            <th>三分</th>
+                            <th>罚球</th>
+                            <th>犯规</th>
+                            <th>上场</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            const sortedPlayers = [...teamData.players].sort((a, b) => b.points - a.points);
+            
+            sortedPlayers.forEach(player => {
+                const foulClass = player.fouls >= 5 ? 'style="color: #e74c3c;"' : '';
+                const status = player.fouls >= 5 ? '犯满' : (player.isOnCourt ? '在场' : '替补');
+                
+                html += `
+                    <tr>
+                        <td>${player.number}</td>
+                        <td>${player.name}</td>
+                        <td>${player.points}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td ${foulClass}>${player.fouls}</td>
+                        <td>${status}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                    </tbody>
+                </table>
+            `;
+            
+            return html;
+        }
+
+        function closeStatsModal() {
+            document.getElementById('stats-modal').classList.remove('active');
+        }
+
+        function exportToCSV() {
+            let csv = '比赛统计\n\n';
+            csv += `${gameState.homeTeam.name} vs ${gameState.awayTeam.name}\n`;
+            csv += `最终比分: ${gameState.homeTeam.score} - ${gameState.awayTeam.score}\n`;
+            csv += `比赛时间: ${gameState.gameStartTime ? new Date(gameState.gameStartTime).toLocaleString() : '未记录'}\n\n`;
+            
+            [gameState.homeTeam, gameState.awayTeam].forEach(team => {
+                csv += `${team.name}\n`;
+                csv += '号码,姓名,得分,犯规,状态\n';
+                team.players.forEach(player => {
+                    const status = player.fouls >= 5 ? '犯满' : (player.isOnCourt ? '在场' : '替补');
+                    csv += `${player.number},${player.name},${player.points},${player.fouls},${status}\n`;
+                });
+                csv += '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `比赛统计_${new Date().toISOString().slice(0, 10)}.csv`;
+            link.click();
+        }
+
+        function exportToJSON() {
+            const data = {
+                gameInfo: {
+                    homeTeam: gameState.homeTeam.name,
+                    awayTeam: gameState.awayTeam.name,
+                    homeScore: gameState.homeTeam.score,
+                    awayScore: gameState.awayTeam.score,
+                    gameStartTime: gameState.gameStartTime,
+                    gameEndTime: new Date().toISOString()
+                },
+                homeTeam: {
+                    name: gameState.homeTeam.name,
+                    score: gameState.homeTeam.score,
+                    players: gameState.homeTeam.players
+                },
+                awayTeam: {
+                    name: gameState.awayTeam.name,
+                    score: gameState.awayTeam.score,
+                    players: gameState.awayTeam.players
+                },
+                gameLog: gameState.gameLog
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `比赛数据_${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+        }
+
+        function saveTeamToList(team) {
+            currentTeamToSave = team;
+            const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
+            
+            if (teamData.players.length === 0) {
+                alert('当前没有球员可保存');
+                return;
+            }
+            
+            const teamName = prompt('请输入球队名称:', teamData.name);
+            if (teamName && teamName.trim()) {
+                const savedTeams = JSON.parse(localStorage.getItem('savedTeams') || '[]');
+                const existingIndex = savedTeams.findIndex(t => t.name === teamName.trim());
+                
+                const teamToSave = {
+                    name: teamName.trim(),
+                    players: teamData.players.map(p => ({
+                        number: p.number,
+                        name: p.name
+                    }))
+                };
+                
+                if (existingIndex >= 0) {
+                    savedTeams[existingIndex] = teamToSave;
+                } else {
+                    savedTeams.push(teamToSave);
+                }
+                
+                localStorage.setItem('savedTeams', JSON.stringify(savedTeams));
+                alert('球队已保存！');
+            }
+        }
+
+        function showSavedTeamsModal(team) {
+            currentTeamToSave = team;
+            const savedTeams = JSON.parse(localStorage.getItem('savedTeams') || '[]');
+            const listEl = document.getElementById('saved-teams-list');
+            
+            if (savedTeams.length === 0) {
+                listEl.innerHTML = '<p style="color: #888;">暂无保存的球队</p>';
+            } else {
+                let html = '';
+                savedTeams.forEach((team, index) => {
+                    html += `
+                        <div class="saved-team-item">
+                            <div class="saved-team-name">${team.name} (${team.players.length}人)</div>
+                            <div class="saved-team-actions">
+                                <button class="saved-team-btn load" onclick="loadSavedTeam(${index})">加载</button>
+                                <button class="saved-team-btn delete" onclick="deleteSavedTeam(${index})">删除</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                listEl.innerHTML = html;
+            }
+            
+            document.getElementById('saved-teams-modal').classList.add('active');
+        }
+
+        function closeSavedTeamsModal() {
+            document.getElementById('saved-teams-modal').classList.remove('active');
+            currentTeamToSave = null;
+        }
+
+        function loadSavedTeam(index) {
+            const savedTeams = JSON.parse(localStorage.getItem('savedTeams') || '[]');
+            const savedTeam = savedTeams[index];
+            
+            if (savedTeam && currentTeamToSave) {
+                const teamData = currentTeamToSave === 'home' ? gameState.homeTeam : gameState.awayTeam;
+                teamData.name = savedTeam.name;
+                teamData.players = savedTeam.players.map(p => ({
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+                    number: p.number,
+                    name: p.name,
+                    points: 0,
+                    fouls: 0,
+                    isOnCourt: false
+                }));
+                
+                saveSettings();
+                updateDisplay();
+                renderPlayers();
+                closeSavedTeamsModal();
+                alert('球队已加载！');
+            }
+        }
+
+        function deleteSavedTeam(index) {
+            if (!confirm('确定要删除这个球队吗？')) {
+                return;
+            }
+            
+            const savedTeams = JSON.parse(localStorage.getItem('savedTeams') || '[]');
+            savedTeams.splice(index, 1);
+            localStorage.setItem('savedTeams', JSON.stringify(savedTeams));
+            showSavedTeamsModal(currentTeamToSave);
+        }
+
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
