@@ -519,6 +519,8 @@
         #game-log-content {
             max-height: 300px;
             overflow-y: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
 
         .game-log-item {
@@ -922,8 +924,8 @@
         @media (max-width: 900px) and (orientation: landscape) {
             .content {
                 padding: 5px;
-                padding-left: 130px;
-                padding-right: 130px;
+                padding-left: 150px;
+                padding-right: 150px;
             }
             
             .main-container {
@@ -933,11 +935,11 @@
             
             .left-players, .right-players {
                 position: fixed;
-                top: 60px;
-                width: 120px;
-                min-height: calc(100vh - 100px);
-                max-height: calc(100vh - 100px);
-                padding: 8px;
+                top: 50px;
+                width: 140px;
+                min-height: calc(100vh - 90px);
+                max-height: calc(100vh - 90px);
+                padding: 6px;
             }
             
             .left-players {
@@ -955,116 +957,122 @@
             
             .scoreboard {
                 flex-direction: row;
-                gap: 8px;
-                padding: 10px;
-            }
-            
-            .score {
-                font-size: 60px;
-                margin-bottom: 8px;
-            }
-            
-            .team-name {
-                font-size: 12px;
-                margin-bottom: 8px;
-            }
-            
-            .game-time {
-                font-size: 22px;
-                margin-bottom: 10px;
-            }
-            
-            .period {
-                font-size: 12px;
-                margin-bottom: 5px;
-            }
-            
-            .score-button {
-                width: 35px;
-                height: 35px;
-                font-size: 12px;
-            }
-            
-            .stats-row {
-                gap: 15px;
-                margin-bottom: 10px;
-            }
-            
-            .stat-label {
-                font-size: 10px;
-            }
-            
-            .stat-value {
-                font-size: 16px;
-            }
-            
-            .title {
-                font-size: 14px;
-            }
-            
-            .header {
+                gap: 6px;
                 padding: 8px;
             }
             
-            .header-buttons {
-                gap: 5px;
+            .score {
+                font-size: 48px;
+                margin-bottom: 6px;
             }
             
-            .tab-button, .premium-button {
-                padding: 5px 10px;
+            .team-name {
+                font-size: 11px;
+                margin-bottom: 6px;
+            }
+            
+            .game-time {
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
+            
+            .period {
+                font-size: 11px;
+                margin-bottom: 4px;
+            }
+            
+            .score-button {
+                width: 32px;
+                height: 32px;
                 font-size: 11px;
             }
             
-            .control-buttons {
-                gap: 5px;
+            .stats-row {
+                gap: 12px;
+                margin-bottom: 8px;
             }
             
-            .control-button {
-                padding: 5px 10px;
-                font-size: 10px;
+            .stat-label {
+                font-size: 9px;
             }
             
-            .action-buttons {
-                gap: 5px;
+            .stat-value {
+                font-size: 14px;
             }
             
-            .action-button {
+            .title {
+                font-size: 13px;
+            }
+            
+            .header {
+                padding: 6px;
+            }
+            
+            .header-buttons {
+                gap: 4px;
+            }
+            
+            .tab-button, .premium-button {
                 padding: 4px 8px;
                 font-size: 10px;
             }
             
+            .control-buttons {
+                gap: 4px;
+            }
+            
+            .control-button {
+                padding: 4px 8px;
+                font-size: 9px;
+            }
+            
+            .action-buttons {
+                gap: 4px;
+            }
+            
+            .action-button {
+                padding: 3px 6px;
+                font-size: 9px;
+            }
+            
             .section-title {
-                font-size: 11px;
-                margin-bottom: 8px;
-            }
-            
-            .player-section {
-                margin-bottom: 8px;
-            }
-            
-            .player-section-title {
                 font-size: 10px;
                 margin-bottom: 5px;
             }
             
+            .player-section {
+                margin-bottom: 5px;
+            }
+            
+            .player-section-title {
+                font-size: 9px;
+                margin-bottom: 3px;
+            }
+            
             .player-card {
-                padding: 5px;
+                padding: 4px;
                 margin-bottom: 4px;
+                flex-wrap: nowrap;
             }
             
             .player-number {
-                font-size: 14px;
-                min-width: 25px;
+                font-size: 13px;
+                min-width: 22px;
             }
             
             .player-name {
                 font-size: 10px;
-                margin: 0 5px;
+                margin: 0 4px;
+                flex: 1;
+                min-width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
             
             .player-stats {
-                gap: 8px;
-                margin-right: 5px;
+                gap: 6px;
+                margin-right: 4px;
             }
             
             .player-stat-value {
@@ -1077,12 +1085,22 @@
             
             .player-actions {
                 gap: 2px;
+                width: auto;
+                justify-content: flex-start;
+                margin-top: 0;
+                flex-shrink: 0;
             }
             
             .player-action-btn {
-                width: 18px;
-                height: 18px;
+                width: 20px;
+                height: 20px;
                 font-size: 9px;
+                border-radius: 3px;
+            }
+            
+            .player-fouled-out-badge {
+                font-size: 8px;
+                padding: 1px 3px;
             }
             
             .add-player-btn {
@@ -1092,7 +1110,7 @@
             }
             
             .team-actions {
-                gap: 5px;
+                gap: 4px;
                 margin-top: 5px;
             }
             
@@ -1102,42 +1120,86 @@
             }
             
             .center-section {
-                margin: 0 10px;
+                margin: 0 6px;
             }
         }
         
         /* 小屏手机横屏 */
         @media (max-width: 700px) and (orientation: landscape) {
             .content {
-                padding-left: 110px;
-                padding-right: 110px;
+                padding-left: 120px;
+                padding-right: 120px;
             }
             
             .left-players, .right-players {
-                width: 100px;
+                width: 110px;
                 padding: 5px;
             }
             
             .score {
-                font-size: 48px;
+                font-size: 40px;
             }
             
             .game-time {
-                font-size: 18px;
+                font-size: 16px;
             }
             
             .team-name {
-                font-size: 11px;
+                font-size: 10px;
             }
             
             .score-button {
-                width: 30px;
-                height: 30px;
+                width: 28px;
+                height: 28px;
                 font-size: 10px;
             }
             
             .stat-value {
-                font-size: 14px;
+                font-size: 12px;
+            }
+            
+            .player-card {
+                padding: 3px;
+            }
+            
+            .player-number {
+                font-size: 11px;
+                min-width: 20px;
+            }
+            
+            .player-name {
+                font-size: 9px;
+            }
+            
+            .player-action-btn {
+                width: 18px;
+                height: 18px;
+                font-size: 8px;
+            }
+            
+            #game-log-content {
+                max-height: 150px;
+                font-size: 11px;
+            }
+            
+            .game-log-item {
+                padding: 6px;
+                margin-bottom: 4px;
+                font-size: 11px;
+            }
+            
+            .game-log-item .log-time {
+                font-size: 10px;
+            }
+            
+            .game-log-item .log-period {
+                font-size: 10px;
+                margin-left: 5px;
+            }
+            
+            .game-log-item .log-content {
+                margin-top: 3px;
+                font-size: 10px;
             }
         }
     </style>
@@ -2083,7 +2145,10 @@
             const container = document.getElementById('game-log-content');
             let html = '';
             
-            gameState.gameLog.slice(0, 20).forEach(log => {
+            // 反转数组，让最新的记录显示在下方
+            const reversedLogs = [...gameState.gameLog].reverse().slice(0, 20);
+            
+            reversedLogs.forEach(log => {
                 const timeStr = formatTime(log.gameTime);
                 const periodStr = getPeriodDisplay(log.period, log.isOvertime);
                 let content = '';
@@ -2132,6 +2197,9 @@
             });
             
             container.innerHTML = html;
+            
+            // 自动滚动到底部显示最新记录
+            container.scrollTop = container.scrollHeight;
         }
 
         function showStatsModal() {
