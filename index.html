@@ -836,11 +836,30 @@
         @media (max-width: 768px) {
             .scoreboard {
                 flex-direction: column;
-                gap: 30px;
+                gap: 20px;
+                padding: 15px;
             }
             
             .score {
-                font-size: 144px;
+                font-size: 80px;
+            }
+            
+            .team-name {
+                font-size: 18px;
+            }
+            
+            .game-time {
+                font-size: 36px;
+            }
+            
+            .period {
+                font-size: 18px;
+            }
+            
+            .score-button {
+                width: 50px;
+                height: 50px;
+                font-size: 16px;
             }
             
             .main-container {
@@ -849,6 +868,53 @@
             
             .content {
                 padding: 10px;
+            }
+            
+            .left-players, .right-players {
+                min-height: auto;
+                max-height: 400px;
+            }
+            
+            .title {
+                font-size: 20px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .control-button {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            
+            .action-button {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .score {
+                font-size: 60px;
+            }
+            
+            .game-time {
+                font-size: 28px;
+            }
+            
+            .score-button {
+                width: 45px;
+                height: 45px;
+                font-size: 14px;
+            }
+            
+            .stats-row {
+                gap: 15px;
+            }
+            
+            .stat-value {
+                font-size: 20px;
             }
         }
     </style>
