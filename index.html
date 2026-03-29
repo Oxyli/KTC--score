@@ -1488,6 +1488,34 @@
         let currentTeamToSave = null;
         let pendingScore = null;
 
+        // 声音提示函数
+        function playSound() {
+            try {
+                // 创建音频上下文
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // 创建一个振荡器
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // 设置声音参数
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.5);
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                
+                // 播放声音
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (error) {
+                console.log('无法播放声音:', error);
+            }
+        }
+
         function init() {
             loadSettings();
             updateDisplay();
@@ -1563,10 +1591,32 @@
         }
 
         function addScore(team, points) {
+            // 保存操作前的状态
+            const beforeState = JSON.parse(JSON.stringify({
+                homeTeam: gameState.homeTeam,
+                awayTeam: gameState.awayTeam,
+                gameTime: gameState.gameTime,
+                period: gameState.period,
+                isOvertime: gameState.isOvertime
+            }));
+            
             const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
             teamData.score += points;
             saveSettings();
             updateDisplay();
+            
+            // 生成事件对象
+            const event = {
+                type: 'score',
+                team: team,
+                points: points,
+                gameTime: gameState.gameTime,
+                period: gameState.period,
+                isOvertime: gameState.isOvertime
+            };
+            
+            // 添加到游戏记录并保存历史
+            addGameLog(event, beforeState);
         }
 
         function showScorePlayerSelect(team, points) {
@@ -1605,6 +1655,15 @@
         function confirmPlayerScore(playerId) {
             if (!pendingScore) return;
             
+            // 保存操作前的状态
+            const beforeState = JSON.parse(JSON.stringify({
+                homeTeam: gameState.homeTeam,
+                awayTeam: gameState.awayTeam,
+                gameTime: gameState.gameTime,
+                period: gameState.period,
+                isOvertime: gameState.isOvertime
+            }));
+            
             const { team, points } = pendingScore;
             const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
             const player = teamData.players.find(p => p.id === playerId);
@@ -1613,7 +1672,8 @@
                 player.points += points;
                 teamData.score += points;
                 
-                addGameLog({
+                // 生成事件对象
+                const event = {
                     type: 'score',
                     team: team,
                     playerId: playerId,
@@ -1623,7 +1683,10 @@
                     gameTime: gameState.gameTime,
                     period: gameState.period,
                     isOvertime: gameState.isOvertime
-                });
+                };
+                
+                // 添加到游戏记录并保存历史
+                addGameLog(event, beforeState);
                 
                 saveSettings();
                 updateDisplay();
@@ -1642,18 +1705,31 @@
         }
 
         function addFoul(team) {
+            // 保存操作前的状态
+            const beforeState = JSON.parse(JSON.stringify({
+                homeTeam: gameState.homeTeam,
+                awayTeam: gameState.awayTeam,
+                gameTime: gameState.gameTime,
+                period: gameState.period,
+                isOvertime: gameState.isOvertime
+            }));
+            
             const teamData = team === 'home' ? gameState.homeTeam : gameState.awayTeam;
             teamData.fouls++;
             saveSettings();
             updateDisplay();
             
-            addGameLog({
+            // 生成事件对象
+            const event = {
                 type: 'foul',
                 team: team,
                 gameTime: gameState.gameTime,
                 period: gameState.period,
                 isOvertime: gameState.isOvertime
-            });
+            };
+            
+            // 添加到游戏记录并保存历史
+            addGameLog(event, beforeState);
             
             if (gameState.isProVersion) {
                 renderGameLog();
@@ -1709,6 +1785,7 @@
                 
                 if (gameState.timeoutTimers[timerKey] <= 0) {
                     stopTimeoutTimer(team);
+                    playSound(); // 暂停时间结束声音提示
                     alert(`${team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name} 暂停时间到！`);
                 }
             }, 1000);
@@ -1781,6 +1858,7 @@
                     timerEl.textContent = `${gameState.shotClock[timerKey]}秒`;
                 } else {
                     stopShotClock(team);
+                    playSound(); // 进攻时间结束声音提示
                     alert('进攻时间到！');
                 }
             }, 1000);
@@ -1843,6 +1921,7 @@
                         btn.textContent = '开始';
                         btn.classList.remove('pause');
                         clearInterval(timerInterval);
+                        playSound(); // 比赛时间结束声音提示
                     }
                 }, 1000);
             }
@@ -2268,7 +2347,7 @@
             `;
         }
 
-        function addGameLog(event) {
+        function addGameLog(event, beforeState) {
             event.timestamp = new Date().toISOString();
             gameState.gameLog.unshift(event);
             
@@ -2277,7 +2356,7 @@
                 const historyItem = {
                     type: event.type,
                     data: JSON.parse(JSON.stringify(event)),
-                    gameStateSnapshot: JSON.parse(JSON.stringify({
+                    gameStateSnapshot: beforeState || JSON.parse(JSON.stringify({
                         homeTeam: gameState.homeTeam,
                         awayTeam: gameState.awayTeam,
                         gameTime: gameState.gameTime,
@@ -2358,7 +2437,7 @@
             let html = '';
             
             // 反转数组，让最新的记录显示在下方
-            const reversedLogs = [...gameState.gameLog].reverse().slice(0, 20);
+            const reversedLogs = [...gameState.gameLog].reverse();
             
             reversedLogs.forEach(log => {
                 const timeStr = formatTime(log.gameTime);
