@@ -1932,6 +1932,14 @@
                 return;
             }
             
+            // 先停止所有计时器
+            stopTimeoutTimer('home');
+            stopTimeoutTimer('away');
+            stopShotClock('home');
+            stopShotClock('away');
+            clearInterval(timerInterval);
+            
+            // 然后重置状态
             gameState.homeTeam.score = 0;
             gameState.homeTeam.fouls = 0;
             gameState.homeTeam.timeouts = 2;
@@ -1958,12 +1966,6 @@
                 p.fouls = 0;
                 p.isOnCourt = false;
             });
-            
-            stopTimeoutTimer('home');
-            stopTimeoutTimer('away');
-            stopShotClock('home');
-            stopShotClock('away');
-            clearInterval(timerInterval);
             
             const btn = document.getElementById('start-pause-btn');
             btn.textContent = '开始';
