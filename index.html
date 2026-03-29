@@ -1489,10 +1489,22 @@
         let pendingScore = null;
 
         // 声音提示函数
-        function playSound() {
+        let audioContext = null;
+        
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            // 确保音频上下文处于活动状态
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+        
+        function playSound(type = 'default') {
             try {
-                // 创建音频上下文
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                initAudioContext();
                 
                 // 创建一个振荡器
                 const oscillator = audioContext.createOscillator();
@@ -1501,16 +1513,31 @@
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                // 设置声音参数
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-                oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.5);
-                
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                
-                // 播放声音
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.5);
+                // 根据类型设置不同的声音参数
+                if (type === 'shot-clock') {
+                    // NBA风格的进攻时间到轰鸣声
+                    oscillator.type = 'sawtooth'; // 锯齿波，更有冲击力
+                    oscillator.frequency.setValueAtTime(500, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 1.5);
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+                    
+                    // 播放声音
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 1.5);
+                } else {
+                    // 默认声音
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 1.0);
+                    
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.0);
+                    
+                    // 播放声音
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 1.0);
+                }
             } catch (error) {
                 console.log('无法播放声音:', error);
             }
@@ -1524,6 +1551,10 @@
                 renderPlayers();
                 renderGameLog();
             }
+            
+            // 添加用户交互事件监听器，确保音频上下文被激活
+            document.addEventListener('click', initAudioContext, { once: true });
+            document.addEventListener('touchstart', initAudioContext, { once: true });
         }
 
         function saveSettings() {
@@ -1786,7 +1817,10 @@
                 if (gameState.timeoutTimers[timerKey] <= 0) {
                     stopTimeoutTimer(team);
                     playSound(); // 暂停时间结束声音提示
-                    alert(`${team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name} 暂停时间到！`);
+                    // 使用setTimeout延迟alert，确保声音有足够时间播放（1秒）
+                    setTimeout(() => {
+                        alert(`${team === 'home' ? gameState.homeTeam.name : gameState.awayTeam.name} 暂停时间到！`);
+                    }, 1000);
                 }
             }, 1000);
             
@@ -1858,8 +1892,11 @@
                     timerEl.textContent = `${gameState.shotClock[timerKey]}秒`;
                 } else {
                     stopShotClock(team);
-                    playSound(); // 进攻时间结束声音提示
-                    alert('进攻时间到！');
+                    playSound('shot-clock'); // 进攻时间结束声音提示（NBA风格轰鸣声）
+                    // 使用setTimeout延迟alert，确保声音有足够时间播放（1.5秒）
+                    setTimeout(() => {
+                        alert('进攻时间到！');
+                    }, 1500);
                 }
             }, 1000);
         }
@@ -1922,6 +1959,10 @@
                         btn.classList.remove('pause');
                         clearInterval(timerInterval);
                         playSound(); // 比赛时间结束声音提示
+                        // 使用setTimeout延迟alert，确保声音有足够时间播放（1秒）
+                        setTimeout(() => {
+                            alert('比赛时间结束！');
+                        }, 1000);
                     }
                 }, 1000);
             }
