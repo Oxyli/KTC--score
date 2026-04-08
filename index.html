@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KTC篮球联赛专用 🏀记分牌</title>
+    <title>FIBA 篮球记分牌</title>
+    <!-- 本地存储方案，无需外部服务 -->
     <style>
         * {
             margin: 0;
@@ -23,18 +24,27 @@
             padding: 20px;
             text-align: center;
             border-bottom: 2px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .title {
             font-size: 32px;
             font-weight: bold;
             color: #3498db;
-            margin-bottom: 10px;
         }
 
         .header-buttons {
             display: flex;
             justify-content: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
 
@@ -626,6 +636,82 @@
             width: 90%;
             max-width: 400px;
             text-align: center;
+        }
+
+        .auth-form {
+            width: 100%;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #ddd;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #34495e;
+            border-radius: 5px;
+            background: #2c3e50;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .auth-switch {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            color: #ddd;
+        }
+        
+        .text-btn {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .text-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-email {
+            font-size: 14px;
+            color: #ddd;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
         }
 
         .modal-title {
@@ -1258,6 +1344,11 @@
             <button class="tab-button" id="stats-btn" onclick="showStatsModal()" style="display: none;">统计</button>
             <button class="premium-button" id="premium-btn" onclick="showPremiumModal()">升级</button>
         </div>
+        <div class="header-right">
+            <button class="tab-button" onclick="exportData()">导出数据</button>
+            <input type="file" id="import-file" accept=".json" onchange="importData(event)" style="display: none;">
+            <button class="tab-button" onclick="document.getElementById('import-file').click()">导入数据</button>
+        </div>
     </div>
 
     <div class="content">
@@ -1543,6 +1634,66 @@
             }
         }
 
+        function saveSettings() {
+            localStorage.setItem('fibaGameState', JSON.stringify(gameState));
+        }
+
+        function loadSettings() {
+            const saved = localStorage.getItem('fibaGameState');
+            if (saved) {
+                try {
+                    gameState = JSON.parse(saved);
+                } catch (e) {
+                    console.error('加载设置失败:', e);
+                }
+            }
+        }
+
+        // 数据导出功能
+        function exportData() {
+            const data = {
+                gameState: gameState,
+                savedTeams: JSON.parse(localStorage.getItem('savedTeams') || '[]'),
+                exportedAt: new Date().toISOString()
+            };
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `fiba-score-data-${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 数据导入功能
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.gameState) {
+                        gameState = data.gameState;
+                        updateDisplay();
+                    }
+                    if (data.savedTeams) {
+                        localStorage.setItem('savedTeams', JSON.stringify(data.savedTeams));
+                    }
+                    saveSettings();
+                    alert('数据导入成功！');
+                } catch (error) {
+                    alert('数据导入失败: ' + error.message);
+                }
+            };
+            reader.onerror = function() {
+                alert('文件读取失败');
+            };
+            reader.readAsText(file);
+        }
+
         function init() {
             loadSettings();
             updateDisplay();
@@ -1555,17 +1706,6 @@
             // 添加用户交互事件监听器，确保音频上下文被激活
             document.addEventListener('click', initAudioContext, { once: true });
             document.addEventListener('touchstart', initAudioContext, { once: true });
-        }
-
-        function saveSettings() {
-            localStorage.setItem('fibaGameState', JSON.stringify(gameState));
-        }
-
-        function loadSettings() {
-            const saved = localStorage.getItem('fibaGameState');
-            if (saved) {
-                gameState = JSON.parse(saved);
-            }
         }
 
         function updateDisplay() {
