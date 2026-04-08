@@ -1717,8 +1717,15 @@
         }
 
         function updateDisplay() {
+            console.log('updateDisplay called, gameState:', JSON.stringify(gameState));
+            
+            const homeScoreEl = document.getElementById('home-score');
+            const awayScoreEl = document.getElementById('away-score');
+            
+            console.log('Before update - homeScoreEl:', homeScoreEl?.textContent, 'awayScoreEl:', awayScoreEl?.textContent);
+            
             document.getElementById('home-team-name').textContent = gameState.homeTeam.name;
-            document.getElementById('home-score').textContent = gameState.homeTeam.score;
+            homeScoreEl.textContent = gameState.homeTeam.score;
             
             const homeFoulsEl = document.getElementById('home-fouls');
             homeFoulsEl.textContent = gameState.homeTeam.fouls;
@@ -1731,7 +1738,7 @@
             document.getElementById('home-timeouts').textContent = gameState.homeTeam.timeouts;
             
             document.getElementById('away-team-name').textContent = gameState.awayTeam.name;
-            document.getElementById('away-score').textContent = gameState.awayTeam.score;
+            awayScoreEl.textContent = gameState.awayTeam.score;
             
             const awayFoulsEl = document.getElementById('away-fouls');
             awayFoulsEl.textContent = gameState.awayTeam.fouls;
@@ -1754,6 +1761,8 @@
             } else {
                 timeElement.classList.remove('warning');
             }
+            
+            console.log('After update - homeScoreEl:', homeScoreEl?.textContent, 'awayScoreEl:', awayScoreEl?.textContent);
         }
 
         function formatTime(seconds) {
@@ -2117,9 +2126,14 @@
         }
 
         function resetGame() {
+            console.log('resetGame called');
+            
             if (!confirm('确定要重置比赛吗？所有数据将被清空。')) {
+                console.log('User cancelled reset');
                 return;
             }
+            
+            console.log('Reset confirmed, stopping timers...');
             
             // 先停止所有计时器
             stopTimeoutTimer('home');
@@ -2127,6 +2141,9 @@
             stopShotClock('home');
             stopShotClock('away');
             clearInterval(timerInterval);
+            
+            console.log('Resetting game state...');
+            console.log('Before reset - home score:', gameState.homeTeam.score, 'away score:', gameState.awayTeam.score);
             
             // 然后重置状态
             gameState.homeTeam.score = 0;
@@ -2156,13 +2173,18 @@
                 p.isOnCourt = false;
             });
             
+            console.log('After reset - home score:', gameState.homeTeam.score, 'away score:', gameState.awayTeam.score);
+            
             const btn = document.getElementById('start-pause-btn');
             btn.textContent = '开始';
             btn.classList.remove('pause');
             
+            console.log('Calling updateDisplay...');
             // 先更新UI，然后保存设置
             updateDisplay();
+            console.log('Calling saveSettings...');
             saveSettings();
+            console.log('Reset complete');
             if (gameState.isProVersion) {
                 renderPlayers();
                 renderGameLog();
