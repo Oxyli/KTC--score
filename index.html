@@ -1635,17 +1635,25 @@
         }
 
         function saveSettings() {
-            localStorage.setItem('fibaGameState', JSON.stringify(gameState));
+            try {
+                localStorage.setItem('fibaGameState', JSON.stringify(gameState));
+            } catch (e) {
+                console.warn('保存设置失败:', e);
+            }
         }
 
         function loadSettings() {
-            const saved = localStorage.getItem('fibaGameState');
-            if (saved) {
-                try {
-                    gameState = JSON.parse(saved);
-                } catch (e) {
-                    console.error('加载设置失败:', e);
+            try {
+                const saved = localStorage.getItem('fibaGameState');
+                if (saved) {
+                    try {
+                        gameState = JSON.parse(saved);
+                    } catch (e) {
+                        console.error('加载设置失败:', e);
+                    }
                 }
+            } catch (e) {
+                console.warn('访问localStorage失败:', e);
             }
         }
 
