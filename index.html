@@ -2152,8 +2152,9 @@
             btn.textContent = '开始';
             btn.classList.remove('pause');
             
-            saveSettings();
+            // 先更新UI，然后保存设置
             updateDisplay();
+            saveSettings();
             if (gameState.isProVersion) {
                 renderPlayers();
                 renderGameLog();
